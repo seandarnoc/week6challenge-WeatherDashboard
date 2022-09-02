@@ -1,9 +1,10 @@
 let searchHistory = []
 let citySearched = ""
-
+console.log(citySearched)
+console.log(searchHistory)
 let getCityWeather = function(city) {
     
-    let requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=911322f92f909f749f46e55801860b89";
+    let requestUrl = "https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=c48c0b53b415c3b9b157cc9b307523b9";
 
     fetch(requestUrl)
 
@@ -48,13 +49,13 @@ let searchSubmitQuery = function(event) {
 let displayWeather = function(weatherResponse) {
 
     // format and display the values
-    $("#current-city-name").text(weatherResponse.name +  moment().format('L')).append(`<img src="https://openweathermap.org/img/wn/${weatherResponse.weather[0].icon}@2x.png"></img>`);
+    $("#current-city-name").text(weatherResponse.name, moment(weatherResponse.dt *1000).format('L')).append(`<img src="https://openweathermap.org/img/wn/${weatherResponse.weather[0].icon}@2x.png"></img>`);
     $("#current-city-temp").text("Temp: " + weatherResponse.main.temp.toFixed(1) + "°F");
     $("#current-city-wind").text("Wind: " + weatherResponse.main.wind.speed.toFixed(1) + "MPH");
     $("#current-city-humidity").text("Humidity: " + weatherResponse.humidity + "%");
-
+console.log("weweatherResponse.main.wind.speed")
     // use lat & lon to make the uv api call
-    fetch("https://api.openweathermap.org/data/2.5/uvi?lat=" + weatherResponse.coord.lat + "&lon="+ weatherResponse.coord.lon + "&appid=911322f92f909f749f46e55801860b89")
+    fetch("https://api.openweathermap.org/data/2.5/uvi?lat=" + weatherResponse.coord.lat + "&lon="+ weatherResponse.coord.lon + "&appid=c48c0b53b415c3b9b157cc9b307523b9")
         .then(function(response) {
             response.json().then(function(data) {
 
@@ -76,8 +77,9 @@ let displayWeather = function(weatherResponse) {
             })
         });
 
+
     // five-day api call
-    fetch("https://api.openweathermap.org/data/2.5/forecast?q=" + weatherResponse.name + "&appid=911322f92f909f749f46e55801860b89&units=imperial")
+    fetch("https://api.openweathermap.org/data/2.5/forecast?q=" + weatherResponse.name + "&appid=c48c0b53b415c3b9b157cc9b307523b9&units=imperial")
         .then(function(response) {
             response.json().then(function(data) {
 
@@ -87,7 +89,6 @@ let displayWeather = function(weatherResponse) {
                 // get every 8th value (24hours) in the returned array from the api call
                 for(i = 7; i <= data.list.length; i += 8){
 
-                    // insert data into my day forecast card template
                     let fiveDayCard =`
                     <div class="col-md-2 m-2 py-3 card text-white bg-primary">
                         <div class="card-body p-1">
@@ -99,45 +100,42 @@ let displayWeather = function(weatherResponse) {
                     </div>
                     `;
 
-                    // append the day to the five-day forecast
+                    
                     $("#five-day-forecast").append(fiveDayCard);
                }
             })
         });
 
-    // save the last city searched
+
      citySearched = weatherResponse.name;
 
-    // save to the search history using the api's name value for consistancy
-    // this also keeps searches that did not return a result from populating the array
+ 
     saveSearchHistory(weatherResponse.name);
 
     
 };
 
-// function to save the city search history to local storage
+
 let saveSearchHistory = function (city) {
     if(!searchHistory.includes(city)){
         searchHistory.push(city);
         $("#search-history").append("<a href='#' class='list-group-item list-group-item-action' id='" + city + "'>" + city + "</a>")
     } 
 
-    // save the searchHistory array to local storage
     localStorage.setItem("weatherSearchHistory", JSON.stringify(searchHistory));
 
-    // save the lastCitySearched to local storage
+  
     localStorage.setItem("citySearched", JSON.stringify(citySearched));
 
-    // display the searchHistory array
+    
     loadSearchHistory();
 };
 
-// function to load saved city search history from local storage
 let loadSearchHistory = function() {
     searchHistory = JSON.parse(localStorage.getItem("weatherSearchHistory"));
     citySearched = JSON.parse(localStorage.getItem("citySearched"));
   
-    // if nothing in localStorage, create an empty searchHistory array and an empty lastCitySearched string
+   
     if (!searchHistory) {
         searchHistory = []
     }
@@ -146,32 +144,32 @@ let loadSearchHistory = function() {
         citySearched = ""
     }
 
-    // clear any previous values from th search-history ul
+   
     $("#search-history").empty();
     
 
-    // for loop that will run through all the citys found in the array
+   
     for(i = 0 ; i < searchHistory.length ;i++) {
 
-        // add the city as a link, set it's id, and append it to the search-history ul
+        
         $("#search-history").append("<a href='#' class='list-group-item list-group-item-action' id='" + searchHistory[i] + "'>" + searchHistory[i] + "</a>");
     }
   };
 
-// load search history from local storage
+
 loadSearchHistory();
 
-// start page with the last city searched if there is one
+
 if (citySearched != ""){
     getCityWeather(citySearched);
 }
 
-// event handlers
+
 $("#search-field").submit(searchSubmitQuery);
 $("#search-history").on("click", function(event){
-    // get the links id value
+   
     let prevCity = $(event.target).closest("a").attr("id");
-    // pass it's id value to the getCityWeather function
+    
     getCityWeather(prevCity);
 });
 }
