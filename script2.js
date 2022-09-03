@@ -21,8 +21,8 @@ function searchSubmitQuery(event) {
 
 }
 
-function getCityInfo(cityName) {
-    let apiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=c48c0b53b415c3b9b157cc9b307523b9`;
+function getCityInfo(searchInput) {
+    let apiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${searchInput}&limit=5&appid=c48c0b53b415c3b9b157cc9b307523b9`;
     fetch(apiUrl)
 
         .then(function (response) {
