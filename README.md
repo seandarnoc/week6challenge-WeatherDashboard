@@ -26,4 +26,4 @@ The following image shows the web application's appearance and functionality:
 
 A screenshot displays a weather dashboard that includes a search function and a five-day forecast.
 
-image.png
+![](images/weatherdashboard.png)
