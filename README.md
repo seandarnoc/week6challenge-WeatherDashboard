@@ -27,3 +27,6 @@ The following image shows the web application's appearance and functionality:
 A screenshot displays a weather dashboard that includes a search function and a five-day forecast.
 
 ![](./Assets/images/weatherdashboard.png)
+
+link to deployed webpage: https://seandarnoc.github.io/week6challenge-WeatherDashboard/
+
